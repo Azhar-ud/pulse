@@ -17,9 +17,12 @@ function formatUtcDate(d: Date): string {
 }
 
 export function CommandBar() {
-  const [now, setNow] = useState<Date>(() => new Date());
+  // Render a placeholder on the server so hydration cannot mismatch.
+  // Client mounts and starts ticking the real UTC clock.
+  const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
+    setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
@@ -58,15 +61,12 @@ export function CommandBar() {
           >
             SOURCE <ExternalLink className="h-3 w-3" aria-hidden />
           </a>
-          <div
-            className="flex items-baseline gap-2 font-mono"
-            suppressHydrationWarning
-          >
+          <div className="flex items-baseline gap-2 font-mono">
             <span className="tabular text-[10px] uppercase text-ink-faint">
-              {formatUtcDate(now)}
+              {now ? formatUtcDate(now) : "————"}
             </span>
             <span className="tabular text-[13px] font-medium text-amber">
-              {formatUtcClock(now)}
+              {now ? formatUtcClock(now) : "--:--:--Z"}
             </span>
           </div>
         </div>
