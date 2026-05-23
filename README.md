@@ -1,10 +1,13 @@
 # Pulse
 
-A live signal feed for builders. Hacker News, GitHub trending, crypto markets,
-and weather — one calm terminal, refreshed every minute, no signup.
+[![e2e](https://github.com/Azhar-ud/portfolio-demos-e2e/actions/workflows/test.yml/badge.svg)](https://github.com/Azhar-ud/portfolio-demos-e2e/actions/workflows/test.yml)
 
-Built as a portfolio demo to show real-time data fetching, D3 visualization, and
-editorial dark-luxury UI in Next.js 16.
+A live signal feed for builders. Hacker News, GitHub trending, crypto
+markets, and weather — one Bloomberg-style terminal, refreshed every
+minute, no signup.
+
+Built as a portfolio demo to show real-time data fetching, D3
+visualization, and a mono-only brutalist UI in Next.js 16.
 
 ## Live demo
 
