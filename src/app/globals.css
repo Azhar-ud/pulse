@@ -1,44 +1,81 @@
 @import "tailwindcss";
 
+/* ──────────────────────────────────────────────────────────────────────
+   PULSE — "Builder's terminal"
+   Mono-only. Near-black background. Aggressive signal coloring.
+   No rounded corners. 1px borders only. Tabular nums always-on.
+   Looks like Bloomberg, reads like a status board.
+   ────────────────────────────────────────────────────────────────────── */
+
 :root {
-  --bg: oklch(8% 0.006 60);
-  --bg-elevated: oklch(11% 0.008 60);
-  --bg-card: oklch(13% 0.01 60);
-  --bg-card-hover: oklch(16% 0.012 60);
-  --border: oklch(20% 0.008 60);
-  --border-strong: oklch(30% 0.012 60);
-  --text: oklch(95% 0.005 80);
-  --text-muted: oklch(64% 0.012 70);
-  --text-dim: oklch(44% 0.012 70);
-  --accent: oklch(82% 0.16 75);
-  --accent-dim: oklch(60% 0.13 75);
-  --up: oklch(75% 0.17 145);
-  --down: oklch(70% 0.21 25);
-  --grid: oklch(18% 0.008 60);
+  --bg: oklch(7% 0.003 60);
+  --bg-card: oklch(9% 0.004 60);
+  --bg-elevated: oklch(11% 0.005 60);
+  --bg-row-hover: oklch(13% 0.006 60);
+
+  --border: oklch(20% 0.005 60);
+  --border-strong: oklch(34% 0.008 60);
+  --border-dim: oklch(15% 0.005 60);
+
+  --ink: oklch(94% 0.005 80);
+  --ink-strong: oklch(100% 0 0);
+  --ink-dim: oklch(62% 0.008 70);
+  --ink-faint: oklch(40% 0.008 70);
+  --ink-ghost: oklch(28% 0.008 70);
+
+  /* Signal palette — saturated, terminal-loud */
+  --amber: oklch(82% 0.16 75);
+  --amber-dim: oklch(60% 0.13 75);
+  --amber-tint: oklch(82% 0.16 75 / 0.10);
+
+  --up: oklch(74% 0.20 145);
+  --up-tint: oklch(74% 0.20 145 / 0.10);
+
+  --down: oklch(66% 0.24 25);
+  --down-tint: oklch(66% 0.24 25 / 0.12);
+
+  --info: oklch(70% 0.14 230);
+  --info-tint: oklch(70% 0.14 230 / 0.10);
+
+  --magenta: oklch(70% 0.20 330);
 }
 
 @theme inline {
   --color-bg: var(--bg);
-  --color-bg-elevated: var(--bg-elevated);
   --color-bg-card: var(--bg-card);
-  --color-bg-card-hover: var(--bg-card-hover);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-row-hover: var(--bg-row-hover);
+
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
-  --color-text: var(--text);
-  --color-text-muted: var(--text-muted);
-  --color-text-dim: var(--text-dim);
-  --color-accent: var(--accent);
-  --color-accent-dim: var(--accent-dim);
-  --color-up: var(--up);
-  --color-down: var(--down);
-  --color-grid: var(--grid);
+  --color-border-dim: var(--border-dim);
 
-  --font-display: var(--font-display);
-  --font-sans: var(--font-sans);
+  --color-ink: var(--ink);
+  --color-ink-strong: var(--ink-strong);
+  --color-ink-dim: var(--ink-dim);
+  --color-ink-faint: var(--ink-faint);
+  --color-ink-ghost: var(--ink-ghost);
+
+  --color-amber: var(--amber);
+  --color-amber-dim: var(--amber-dim);
+  --color-amber-tint: var(--amber-tint);
+
+  --color-up: var(--up);
+  --color-up-tint: var(--up-tint);
+  --color-down: var(--down);
+  --color-down-tint: var(--down-tint);
+
+  --color-info: var(--info);
+  --color-info-tint: var(--info-tint);
+
+  --color-magenta: var(--magenta);
+
   --font-mono: var(--font-mono);
 }
 
-* {
+*,
+*::before,
+*::after {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -46,89 +83,156 @@
 html,
 body {
   background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  font-feature-settings: "ss01", "ss02", "cv01", "cv11";
+  color: var(--ink);
+  font-family: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  font-feature-settings: "calt", "ss01", "ss02", "ss03", "zero", "tnum";
+  font-variant-numeric: tabular-nums slashed-zero;
+  letter-spacing: 0;
+}
+
+/* CRT scanline overlay — very subtle, doesn't impact readability */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    oklch(100% 0 0 / 0.012) 2px,
+    oklch(100% 0 0 / 0.012) 3px
+  );
 }
 
 ::selection {
-  background: var(--accent);
+  background: var(--amber);
   color: var(--bg);
 }
 
-/* Custom scrollbar — narrow, warm */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-strong);
-  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-dim);
+  background: var(--ink-faint);
 }
 
-/* Tabular numbers everywhere they matter */
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* Live pulse dot — used in headers */
-.pulse-dot {
+/* Blinking amber cursor — used in CommandBar */
+.blink {
+  animation: blink 1s steps(2, end) infinite;
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+/* Pulsing dot — for ● LIVE indicators */
+.dot-pulse {
   position: relative;
   width: 8px;
   height: 8px;
-  border-radius: 999px;
   background: var(--up);
 }
-.pulse-dot::before {
+.dot-pulse::after {
   content: "";
   position: absolute;
-  inset: -4px;
-  border-radius: 999px;
+  inset: 0;
   background: var(--up);
-  opacity: 0.4;
-  animation: pulse-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: dot-ping 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.6);
-    opacity: 0.6;
-  }
-  80%,
-  100% {
-    transform: scale(2.2);
-    opacity: 0;
-  }
+@keyframes dot-ping {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(3.5); opacity: 0; }
 }
 
-/* Faint grid lines used as background ornament */
-.grid-bg {
-  background-image:
-    linear-gradient(to right, var(--grid) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+/* Marquee horizontal scroll — used by Marquee component */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 60s linear infinite;
+}
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-/* Card "fresh" flash — class toggled briefly when data updates */
-.flash-fresh {
-  animation: flash 1.2s ease-out;
+/* "Just updated" flash — pulses a cell briefly when data refreshes */
+.flash-up {
+  animation: flash-up 0.9s ease-out;
 }
-@keyframes flash {
-  0% {
-    box-shadow: inset 0 0 0 1px var(--accent);
-  }
-  100% {
-    box-shadow: inset 0 0 0 1px transparent;
-  }
+.flash-down {
+  animation: flash-down 0.9s ease-out;
+}
+@keyframes flash-up {
+  0%   { background-color: var(--up-tint); }
+  100% { background-color: transparent; }
+}
+@keyframes flash-down {
+  0%   { background-color: var(--down-tint); }
+  100% { background-color: transparent; }
 }
 
-/* Reduced motion — keep things still */
+/* Hairline 1px row divider used inside terminal tables */
+.row-divider {
+  border-bottom: 1px solid var(--border-dim);
+}
+
+/* Dashed dividers between section blocks */
+.dash-divider {
+  border: none;
+  border-top: 1px dashed var(--border-strong);
+}
+
+/* ASCII separator decoration — uses heavy block chars */
+.ascii-rule {
+  font-family: var(--font-mono);
+  color: var(--ink-ghost);
+  letter-spacing: 0;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Tiny mono "tag" — like [AAA] */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid currentColor;
+  padding: 0 4px;
+  font-size: 10px;
+  line-height: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Skeleton (loading) row */
+.sk {
+  background: linear-gradient(
+    90deg,
+    var(--bg-card) 0%,
+    var(--bg-row-hover) 50%,
+    var(--bg-card) 100%
+  );
+  background-size: 200% 100%;
+  animation: sk 1.4s linear infinite;
+}
+@keyframes sk {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -137,7 +241,7 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-  .pulse-dot::before {
-    display: none;
+  .marquee {
+    animation: none;
   }
 }

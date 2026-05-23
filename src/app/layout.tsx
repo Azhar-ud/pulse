@@ -1,48 +1,32 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
+const plex = IBM_Plex_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Pulse — live signal feed for builders",
+  title: "PULSE // Builder's terminal",
   description:
-    "A real-time terminal for what builders actually watch. Hacker News, GitHub trending, markets, weather — all in one calm dashboard.",
-  metadataBase: new URL("https://pulse-demo.vercel.app"),
+    "A live terminal for what builders watch — Hacker News, GitHub trending, crypto markets, weather across builder cities. Refreshing every minute. Free upstream data, no signup.",
+  metadataBase: new URL("https://pulse-seven-jet.vercel.app"),
   openGraph: {
-    title: "Pulse — live signal feed for builders",
+    title: "PULSE // Builder's terminal",
     description:
-      "A real-time terminal for Hacker News, GitHub trending, markets, and weather.",
+      "A live terminal for what builders watch — Hacker News, GitHub trending, markets, weather.",
     type: "website",
   },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased`}
-    >
-      <body className="min-h-full bg-bg text-text">{children}</body>
+    <html lang="en" className={`${plex.variable} h-full antialiased`}>
+      <body className="relative min-h-full bg-bg text-ink">{children}</body>
     </html>
   );
 }

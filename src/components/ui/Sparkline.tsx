@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { line, curveMonotoneX } from "d3-shape";
+import { line, curveLinear } from "d3-shape";
 import { scaleLinear } from "d3-scale";
 import { extent } from "d3-array";
 
@@ -14,10 +14,14 @@ interface SparklineProps {
   className?: string;
 }
 
+/**
+ * Terminal-style sparkline: linear (not curved) interpolation, sharp pixel
+ * edges, thin stroke. Matches the brutalist mono aesthetic.
+ */
 export function Sparkline({
   data,
-  width = 120,
-  height = 32,
+  width = 60,
+  height = 18,
   stroke = "currentColor",
   fill,
   className,
@@ -27,19 +31,19 @@ export function Sparkline({
     const [min = 0, max = 1] = extent(data);
     const x = scaleLinear()
       .domain([0, data.length - 1])
-      .range([1, width - 1]);
+      .range([0.5, width - 0.5]);
     const y = scaleLinear()
       .domain([min, max === min ? max + 1 : max])
-      .range([height - 2, 2]);
+      .range([height - 0.5, 0.5]);
     return line<number>()
       .x((_, i) => x(i))
       .y((d) => y(d))
-      .curve(curveMonotoneX)(Array.from(data));
+      .curve(curveLinear)(Array.from(data));
   }, [data, width, height]);
 
   const areaPath = useMemo(() => {
     if (!path || !fill) return null;
-    return `${path} L ${width - 1} ${height - 1} L 1 ${height - 1} Z`;
+    return `${path} L ${width - 0.5} ${height} L 0.5 ${height} Z`;
   }, [path, fill, width, height]);
 
   if (!path) {
@@ -61,15 +65,14 @@ export function Sparkline({
       viewBox={`0 0 ${width} ${height}`}
       className={className}
       aria-hidden
+      shapeRendering="geometricPrecision"
     >
-      {areaPath ? <path d={areaPath} fill={fill} opacity={0.18} /> : null}
+      {areaPath ? <path d={areaPath} fill={fill} opacity={0.14} /> : null}
       <path
         d={path}
         fill="none"
         stroke={stroke}
-        strokeWidth={1.5}
-        strokeLinejoin="round"
-        strokeLinecap="round"
+        strokeWidth={1}
       />
     </svg>
   );

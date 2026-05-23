@@ -2,7 +2,7 @@
 
 import useSWR from "swr";
 import { ExternalLink, Flame } from "lucide-react";
-import { Card, LiveDot } from "@/components/ui/Card";
+import { Card, LiveTag } from "@/components/ui/Card";
 import { Sparkline } from "@/components/ui/Sparkline";
 import { clientFetch } from "@/lib/fetcher";
 import { formatCompact, formatRelative, getDomain } from "@/lib/format";
@@ -13,9 +13,11 @@ const REFRESH_MS = 60_000;
 function buildSpark(score: number, seed: number): number[] {
   const n = 12;
   const out: number[] = [];
-  let v = Math.max(1, score * 0.35);
+  let v = Math.max(1, score * 0.4);
   for (let i = 0; i < n; i += 1) {
-    const noise = Math.sin((seed + i) * 1.7) * 0.18 + Math.cos((seed - i) * 0.9) * 0.12;
+    const noise =
+      Math.sin((seed + i) * 1.7) * 0.18 +
+      Math.cos((seed - i) * 0.9) * 0.12;
     v = v + (score - v) * (i / n) + noise * (score * 0.05);
     out.push(Math.max(0, v));
   }
@@ -32,73 +34,76 @@ export function HnPulse() {
 
   return (
     <Card
-      title="Hacker News"
-      caption="Top stories, live"
-      accent={<LiveDot />}
+      symbol="HN"
+      title="HACKER NEWS"
+      caption={`TOP ${data?.length ?? "—"} · 60s`}
+      accent={<LiveTag />}
       className="min-h-[28rem]"
-      contentClassName="p-0"
     >
       {error ? (
-        <ErrorState message="Couldn't reach Hacker News." />
+        <ErrorState message="UPSTREAM ERR · hacker-news.firebaseio.com" />
       ) : isLoading || !data ? (
         <SkeletonRows />
       ) : (
-        <ol className="divide-y divide-border">
-          {data.slice(0, 12).map((story, idx) => {
+        <ol className="divide-y divide-border-dim">
+          {data.slice(0, 14).map((story, idx) => {
             const domain = getDomain(story.url) ?? "news.ycombinator.com";
             const spark = buildSpark(story.score, story.id);
             const hot = story.score >= 250;
             return (
-              <li key={story.id} className="px-5 py-3">
+              <li key={story.id}>
                 <a
                   href={
-                    story.url ?? `https://news.ycombinator.com/item?id=${story.id}`
+                    story.url ??
+                    `https://news.ycombinator.com/item?id=${story.id}`
                   }
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group/row flex items-start gap-4"
+                  className="group/row grid grid-cols-[28px_1fr_60px_18px] items-start gap-3 px-3 py-2 hover:bg-bg-row-hover"
                 >
-                  <span className="tabular w-6 shrink-0 pt-0.5 font-mono text-xs text-text-dim">
+                  <span className="tabular pt-0.5 font-mono text-[11px] text-ink-faint">
                     {String(idx + 1).padStart(2, "0")}
                   </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start gap-2">
-                      <p className="line-clamp-2 text-sm leading-snug text-text group-hover/row:text-accent">
+                  <div className="min-w-0">
+                    <div className="flex items-start gap-1.5">
+                      <p className="line-clamp-2 font-mono text-[12.5px] leading-snug text-ink-strong group-hover/row:text-amber">
                         {story.title}
                       </p>
                       {hot ? (
                         <Flame
-                          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent"
-                          aria-label="hot story"
+                          className="mt-0.5 h-3 w-3 shrink-0 text-amber"
+                          aria-hidden
                         />
                       ) : null}
                     </div>
-                    <div className="mt-1 flex items-center gap-2 font-mono text-[10px] uppercase tracking-wide text-text-dim">
-                      <span className="tabular text-text-muted">
-                        {formatCompact(story.score)} pts
+                    <div className="mt-1 flex items-center gap-x-2 font-mono text-[10px] text-ink-faint">
+                      <span className="tabular text-up">
+                        +{formatCompact(story.score)}
                       </span>
-                      <span>·</span>
-                      <span>{story.descendants} comments</span>
-                      <span>·</span>
-                      <span className="truncate">{domain}</span>
-                      <span>·</span>
-                      <span>{formatRelative(story.time)}</span>
+                      <span aria-hidden>·</span>
+                      <span className="tabular text-ink-dim">
+                        {story.descendants}c
+                      </span>
+                      <span aria-hidden>·</span>
+                      <span className="truncate max-w-[140px]">{domain}</span>
+                      <span aria-hidden>·</span>
+                      <span className="tabular">
+                        {formatRelative(story.time)}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex shrink-0 flex-col items-end gap-1 pt-0.5">
-                    <Sparkline
-                      data={spark}
-                      width={64}
-                      height={20}
-                      stroke="var(--accent)"
-                      fill="var(--accent)"
-                      className="text-accent"
-                    />
-                    <ExternalLink
-                      className="h-3 w-3 text-text-dim group-hover/row:text-accent"
-                      aria-hidden
-                    />
-                  </div>
+                  <Sparkline
+                    data={spark}
+                    width={60}
+                    height={18}
+                    stroke="var(--amber)"
+                    fill="var(--amber)"
+                    className="self-center text-amber"
+                  />
+                  <ExternalLink
+                    className="mt-0.5 h-3 w-3 shrink-0 text-ink-ghost group-hover/row:text-amber"
+                    aria-hidden
+                  />
                 </a>
               </li>
             );
@@ -111,12 +116,17 @@ export function HnPulse() {
 
 function SkeletonRows() {
   return (
-    <ol className="divide-y divide-border">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <li key={i} className="flex items-center gap-4 px-5 py-4">
-          <span className="h-3 w-6 rounded bg-bg-elevated" />
-          <span className="h-3 flex-1 rounded bg-bg-elevated" />
-          <span className="h-5 w-16 rounded bg-bg-elevated" />
+    <ol className="divide-y divide-border-dim">
+      {Array.from({ length: 10 }).map((_, i) => (
+        <li
+          key={i}
+          className="grid grid-cols-[28px_1fr_60px] items-center gap-3 px-3 py-2.5"
+        >
+          <span className="font-mono text-[11px] text-ink-faint">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <span className="sk h-3" />
+          <span className="sk h-3" />
         </li>
       ))}
     </ol>
@@ -125,7 +135,7 @@ function SkeletonRows() {
 
 function ErrorState({ message }: { message: string }) {
   return (
-    <div className="flex h-full items-center justify-center px-5 py-12 text-center text-sm text-text-muted">
+    <div className="px-4 py-10 text-center font-mono text-[11px] uppercase tracking-wider text-down">
       {message}
     </div>
   );

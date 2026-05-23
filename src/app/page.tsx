@@ -1,73 +1,102 @@
-import { Brand } from "@/components/Brand";
+import { CommandBar } from "@/components/CommandBar";
+import { StatusRow } from "@/components/StatusRow";
+import { Marquee } from "@/components/Marquee";
 import { HnPulse } from "@/components/widgets/HnPulse";
 import { MarketDeck } from "@/components/widgets/MarketDeck";
 import { WeatherDeck } from "@/components/widgets/WeatherDeck";
 import { RepoBubbles } from "@/components/widgets/RepoBubbles";
 
+const FEEDS = [
+  { name: "HACKER-NEWS", cadence: "60s" },
+  { name: "GITHUB-API", cadence: "10m" },
+  { name: "COINGECKO", cadence: "45s" },
+  { name: "OPEN-METEO", cadence: "5m" },
+];
+
 export default function Home() {
   return (
-    <div className="relative min-h-dvh bg-bg">
-      <div className="pointer-events-none absolute inset-0 grid-bg" aria-hidden />
-      <div className="relative mx-auto flex max-w-[1400px] flex-col">
-        <Brand />
+    <div className="relative flex min-h-dvh flex-col">
+      <CommandBar />
+      <StatusRow feeds={FEEDS} />
 
-        <header className="px-6 pt-12 pb-10 sm:pt-16 sm:pb-14">
-          <p className="text-[11px] uppercase tracking-[0.24em] text-accent">
-            Live · No login · No tracking
-          </p>
-          <h1 className="mt-3 max-w-3xl font-display text-5xl leading-[0.95] tracking-tight sm:text-7xl">
-            A calm <em className="font-display italic">terminal</em> for the
-            signals builders actually watch.
-          </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-text-muted sm:text-lg">
-            Hacker News, GitHub&apos;s freshest repos, crypto markets, and weather
-            for the cities your team works from — one view, refreshed every
-            minute, no signup.
-          </p>
-        </header>
+      <main className="mx-auto w-full max-w-[1500px] flex-1 px-4 pt-4 pb-2">
+        <div className="mb-3 flex items-baseline justify-between gap-4">
+          <div className="flex items-baseline gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-amber">
+              [01]
+            </span>
+            <h1 className="font-mono text-[12px] uppercase tracking-[0.16em] text-ink-strong">
+              SIGNAL FEED
+            </h1>
+            <span
+              aria-hidden
+              className="ascii-rule hidden flex-1 font-mono text-[12px] sm:inline"
+            >
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            </span>
+          </div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint">
+            REFRESHING
+          </span>
+        </div>
 
-        <main className="grid gap-4 px-6 pb-16 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <HnPulse />
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <MarketDeck />
             <WeatherDeck />
           </div>
-          <div className="lg:col-span-3">
-            <RepoBubbles />
-          </div>
-        </main>
+        </div>
 
-        <footer className="border-t border-border px-6 py-8 text-xs text-text-dim">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <p>
-              Data: Hacker News, GitHub, CoinGecko, Open-Meteo. Cached 60s–10min
-              server-side.
-            </p>
-            <p>
-              Built by{" "}
-              <a
-                href="https://github.com/Azhar-ud"
-                className="text-text-muted hover:text-accent"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Azhar Ud Din
-              </a>
-              {" · "}
-              <a
-                href="https://github.com/Azhar-ud/pulse"
-                className="text-text-muted hover:text-accent"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Source
-              </a>
-            </p>
-          </div>
-        </footer>
-      </div>
+        <div className="mt-3 mb-3 flex items-baseline gap-2">
+          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-amber">
+            [02]
+          </span>
+          <h2 className="font-mono text-[12px] uppercase tracking-[0.16em] text-ink-strong">
+            REPO ACTIVITY
+          </h2>
+          <span
+            aria-hidden
+            className="ascii-rule hidden flex-1 font-mono text-[12px] sm:inline"
+          >
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          </span>
+        </div>
+
+        <RepoBubbles />
+      </main>
+
+      <Marquee />
+
+      <footer className="border-t border-border bg-bg-card">
+        <div className="mx-auto flex max-w-[1500px] flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint">
+            DATA :: hacker-news · github · coingecko · open-meteo
+          </p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint">
+            BUILT BY{" "}
+            <a
+              href="https://github.com/Azhar-ud"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ink-dim hover:text-amber"
+            >
+              AZHAR UD DIN
+            </a>
+            {" · "}
+            <a
+              href="https://github.com/Azhar-ud/pulse"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ink-dim hover:text-amber"
+            >
+              SOURCE
+            </a>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
